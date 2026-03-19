@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/api.ts","./src/format.ts","./src/main.tsx","./src/vite-env.d.ts","./src/components/chat.tsx","./src/components/dashboard.tsx","./src/components/scenariocards.tsx","./src/components/settingspanel.tsx","./src/components/staffingview.tsx"],"version":"5.9.3"}
