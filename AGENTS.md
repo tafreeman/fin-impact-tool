@@ -45,7 +45,7 @@ npm start
 # Unit tests (Vitest — engine only)
 npx vitest run
 
-# E2E tests (Playwright — requires running server)
+# E2E tests (Playwright — auto-builds and starts the app)
 npm run test:e2e
 
 # One-click Windows launcher
@@ -77,8 +77,8 @@ User query (natural language)
 
 ### `server/engine/` — The Calculation Engine
 
-This is the core domain logic. It is:
-- **Pure functions only** — no I/O, no side effects
+This is the core domain logic. Most modules are:
+- **Pure calculation functions** — no I/O, no side effects
 - **Immutable** — mutation functions return new arrays, never modify inputs
 - **Well-tested** — 98 unit tests cover all modules
 - **Type-safe** — `types.ts` is the single source of truth for all interfaces
@@ -138,6 +138,7 @@ Supports two providers: `github` (GitHub Models API, requires PAT) and `ollama` 
 
 - UI tests: `tests/e2e/ui/`
 - Excel import tests: `tests/e2e/excel/`
+- `npm run test:e2e` builds the client and starts the app automatically via `playwright.config.ts`
 - Follow the AAA pattern (Arrange → Act → Assert)
 - See [`playwright-tester-training-prompt.md`](playwright-tester-training-prompt.md) for full Playwright conventions
 
