@@ -67,7 +67,7 @@ export default function StaffingView() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <Filter size={14} className="text-steel-500" />
+            <Filter size={14} className="text-muted" />
             <select
               className="input-field w-48"
               value={filterProject ?? ""}
@@ -89,22 +89,22 @@ export default function StaffingView() {
       </div>
 
       {/* Summary bar */}
-      <div className="card p-4 flex items-center gap-8 flex-wrap">
+      <div className="card panel-pad grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <span className="stat-label">Active Staff</span>
           <div className="stat-value text-lg">{active.length}</div>
         </div>
         <div>
           <span className="stat-label">Monthly Cost</span>
-          <div className="stat-value text-lg text-amber-600">{fmt(totalMonthlyCost)}</div>
+          <div className="stat-value text-lg text-amber-500">{fmt(totalMonthlyCost)}</div>
         </div>
         <div>
           <span className="stat-label">Monthly Revenue</span>
-          <div className="stat-value text-lg text-emerald-600">{fmt(totalMonthlyRevenue)}</div>
+          <div className="stat-value text-lg text-emerald-500">{fmt(totalMonthlyRevenue)}</div>
         </div>
         <div>
           <span className="stat-label">Blended Margin</span>
-          <div className={`stat-value text-lg ${blendedMargin > 25 ? "text-emerald-600" : "text-red-600"}`}>
+          <div className={`stat-value text-lg ${blendedMargin > 25 ? "text-emerald-500" : "text-red-500"}`}>
             {blendedMargin.toFixed(1)}%
           </div>
         </div>
@@ -112,8 +112,8 @@ export default function StaffingView() {
 
       {/* Add form */}
       {showAdd && (
-        <div className="card p-4">
-          <h3 className="text-xs font-semibold text-navy-800 uppercase tracking-wider mb-3">
+        <div className="card panel-pad">
+          <h3 className="section-kicker mb-3">
             Add Staffing Assignment
           </h3>
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
@@ -161,44 +161,44 @@ export default function StaffingView() {
       {/* Table */}
       <div className="card overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center text-steel-500 text-sm">Loading...</div>
+          <div className="p-8 text-center text-muted text-sm">Loading staffing plan...</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="data-table">
               <thead>
-                <tr className="bg-steel-50 text-left">
-                  <th className="px-4 py-2 font-medium text-steel-500">Project</th>
-                  <th className="px-4 py-2 font-medium text-steel-500">Role</th>
-                  <th className="px-4 py-2 font-medium text-steel-500">Name</th>
-                  <th className="px-4 py-2 font-medium text-steel-500 text-right">Hrs/Wk</th>
-                  <th className="px-4 py-2 font-medium text-steel-500 text-right">Bill Rate</th>
-                  <th className="px-4 py-2 font-medium text-steel-500 text-right">Cost Rate</th>
-                  <th className="px-4 py-2 font-medium text-steel-500 text-right">Monthly Cost</th>
-                  <th className="px-4 py-2 font-medium text-steel-500 text-right">Monthly Rev</th>
-                  <th className="px-4 py-2 font-medium text-steel-500 text-right">Margin</th>
-                  <th className="px-4 py-2 font-medium text-steel-500 w-10"></th>
+                <tr className="text-left">
+                  <th>Project</th>
+                  <th>Role</th>
+                  <th>Name</th>
+                  <th className="text-right">Hrs/Wk</th>
+                  <th className="text-right">Bill Rate</th>
+                  <th className="text-right">Cost Rate</th>
+                  <th className="text-right">Monthly Cost</th>
+                  <th className="text-right">Monthly Rev</th>
+                  <th className="text-right">Margin</th>
+                  <th className="w-10"></th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-steel-100">
+              <tbody>
                 {active.map((s: any) => (
-                  <tr key={s.id} className="hover:bg-steel-50/50">
-                    <td className="px-4 py-2.5 font-medium text-navy-800">{s.project_name}</td>
+                  <tr key={s.id}>
+                    <td className="font-medium text-fg">{s.project_name}</td>
                     <td className="px-4 py-2.5">{s.labor_category}</td>
-                    <td className="px-4 py-2.5 text-steel-500">{s.person_name || "TBD"}</td>
+                    <td className="px-4 py-2.5 text-muted">{s.person_name || "TBD"}</td>
                     <td className="px-4 py-2.5 text-right font-mono text-xs">{s.hours_per_week}</td>
                     <td className="px-4 py-2.5 text-right font-mono text-xs">{fmt(s.bill_rate)}/hr</td>
                     <td className="px-4 py-2.5 text-right font-mono text-xs">{fmt(s.cost_rate)}/hr</td>
                     <td className="px-4 py-2.5 text-right font-mono text-xs">{fmt(s.monthly_cost)}</td>
-                    <td className="px-4 py-2.5 text-right font-mono text-xs text-emerald-700">{fmt(s.monthly_revenue)}</td>
+                    <td className="px-4 py-2.5 text-right font-mono text-xs text-emerald-500">{fmt(s.monthly_revenue)}</td>
                     <td className="px-4 py-2.5 text-right font-mono text-xs">
-                      <span className={`${s.margin > 0.25 ? "text-emerald-600" : "text-amber-600"}`}>
+                      <span className={`${s.margin > 0.25 ? "text-emerald-500" : "text-amber-500"}`}>
                         {(s.margin * 100).toFixed(1)}%
                       </span>
                     </td>
                     <td className="px-4 py-2.5 text-right">
                       <button
                         onClick={() => handleRemove(s.id)}
-                        className="p-1 rounded hover:bg-red-50 text-steel-500 hover:text-red-500 transition-colors"
+                        className="p-1 rounded-md text-muted hover:bg-red-500/10 hover:text-red-500 transition-colors"
                         title="Remove"
                       >
                         <Trash2 size={14} />
@@ -207,7 +207,7 @@ export default function StaffingView() {
                   </tr>
                 ))}
                 {active.length === 0 && (
-                  <tr><td colSpan={10} className="px-4 py-8 text-center text-steel-500">No staffing data</td></tr>
+                  <tr><td colSpan={10} className="px-4 py-8 text-center text-muted">No staffing data</td></tr>
                 )}
               </tbody>
             </table>
@@ -216,28 +216,28 @@ export default function StaffingView() {
       </div>
 
       {/* Rate Card */}
-      <div className="card">
-        <div className="px-4 py-3 border-b border-steel-100">
-          <h2 className="text-xs font-semibold text-navy-800 uppercase tracking-wider">Rate Card</h2>
+      <div className="card overflow-hidden">
+        <div className="px-4 py-3 border-b border-border">
+          <p className="section-kicker">Rate Card</p>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="data-table">
             <thead>
-              <tr className="bg-steel-50 text-left">
-                <th className="px-4 py-2 font-medium text-steel-500">Labor Category</th>
-                <th className="px-4 py-2 font-medium text-steel-500 text-right">Bill Rate</th>
-                <th className="px-4 py-2 font-medium text-steel-500 text-right">Cost Rate</th>
-                <th className="px-4 py-2 font-medium text-steel-500 text-right">Margin</th>
+              <tr className="text-left">
+                <th>Labor Category</th>
+                <th className="text-right">Bill Rate</th>
+                <th className="text-right">Cost Rate</th>
+                <th className="text-right">Margin</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-steel-100">
+            <tbody>
               {rates.map((r: any) => (
-                <tr key={r.id} className="hover:bg-steel-50/50">
-                  <td className="px-4 py-2 font-medium text-navy-800">{r.name}</td>
+                <tr key={r.id}>
+                  <td className="font-medium text-fg">{r.name}</td>
                   <td className="px-4 py-2 text-right font-mono text-xs">{fmt(r.bill_rate)}/hr</td>
                   <td className="px-4 py-2 text-right font-mono text-xs">{fmt(r.cost_rate)}/hr</td>
                   <td className="px-4 py-2 text-right font-mono text-xs">
-                    <span className={r.margin > 0.25 ? "text-emerald-600" : "text-amber-600"}>
+                    <span className={r.margin > 0.25 ? "text-emerald-500" : "text-amber-500"}>
                       {(r.margin * 100).toFixed(1)}%
                     </span>
                   </td>

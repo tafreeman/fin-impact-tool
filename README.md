@@ -55,15 +55,31 @@ The LLM helps parse intent and optionally narrate results, but the calculation e
 │ Express Server                                  │
 │  routes.ts   db.ts   ai.ts   import/excel/      │
 │                      │                           │
-│                      ▼                           │
-│             server/engine/                      │
-│     deterministic financial calculations        │
+│              ┌───────┴───────┐                  │
+│              ▼               ▼                   │
+│    server/engine/      Optional LLM provider    │
+│  ALL NUMBERS LIVE HERE  INTENT PARSING ONLY     │
+│  (pure functions,       (GitHub Models / Ollama) │
+│   deterministic,                                 │
+│   no LLM calls)                                  │
 └───────────────┬───────────────────────┬─────────┘
                 │                       │
                 ▼                       ▼
-      Local SQLite data           Optional LLM provider
-        data/finimpact.db         GitHub Models or Ollama
+      Local SQLite data           LLM never sees
+        data/finimpact.db         raw financial output
 ```
+
+## Design Decisions
+
+Key architectural choices and their rationale — see `docs/decisions/` for full ADRs (in progress).
+
+- **LLM-engine separation** — The calculation engine (`server/engine/`) never calls the LLM. The LLM only parses natural-language intent into a typed `ScenarioOperation`. This was a direct response to V1, which sent raw data to the LLM and let it hallucinate financial figures. Separation means financial results are deterministic and independently testable.
+
+- **Template-first narration** — `generateNarrative()` produces markdown from engine output with no LLM call. LLM narration is opt-in (`use_llm_narrative: true`). The tool is fully functional with Ollama or with no LLM configured at all.
+
+- **PII anonymization at trust boundary** — `buildAnonymizedContextSnapshot()` replaces person names with `Staff-N` before any context reaches a cloud LLM. Project names and financial figures are preserved (needed for accurate analysis). `server/db.ts` — do not modify this function in a way that leaks real names.
+
+- **V3 agentic loop with hard iteration cap** — The tool-calling loop in `agenticScenario()` is capped at 8 iterations with a forced final-summary fallback. This prevents runaway token spend and ensures the route always returns a response.
 
 ## Quick Start
 

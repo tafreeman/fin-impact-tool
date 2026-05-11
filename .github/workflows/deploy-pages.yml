@@ -27,6 +27,7 @@ jobs:
       - run: npm ci
       - run: cd client && npm ci
       - run: npx tsc --noEmit
+      - run: npm test
       - run: npm run build
 
   build:

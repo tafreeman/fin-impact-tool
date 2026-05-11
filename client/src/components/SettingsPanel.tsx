@@ -69,55 +69,58 @@ export default function SettingsPanel() {
   const isOllama = llmProvider === "ollama";
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       {/* LLM Provider Selection */}
-      <div className="card p-5">
+      <div className="card panel-pad">
         <div className="flex items-center gap-2 mb-4">
-          <Server size={16} className="text-navy-700" />
-          <h2 className="text-sm font-semibold text-navy-800">LLM Provider</h2>
+          <Server size={16} className="text-accent" />
+          <div>
+            <p className="section-kicker">Runtime</p>
+            <h2 className="section-title text-base">LLM Provider</h2>
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => setLlmProvider("github")}
-            className={`p-3 rounded-lg border-2 text-left transition-colors ${
+            className={`p-3 rounded-lg border text-left transition-colors ${
               !isOllama
-                ? "border-navy-700 bg-navy-50"
-                : "border-steel-200 hover:border-steel-300"
+                ? "border-accent bg-accent-soft"
+                : "border-border bg-surface-2 hover:border-accent/60"
             }`}
           >
-            <p className="text-sm font-semibold text-navy-800">GitHub Models</p>
-            <p className="text-[10px] text-steel-500 mt-0.5">Cloud API — requires PAT</p>
-            <p className="text-[10px] text-amber-600 mt-0.5">Anonymized context sent to cloud</p>
+            <p className="text-sm font-semibold text-fg">GitHub Models</p>
+            <p className="text-[10px] text-muted mt-0.5">Cloud API — requires PAT</p>
+            <p className="text-[10px] text-amber-500 mt-0.5">Anonymized context sent to cloud</p>
           </button>
           <button
             onClick={() => setLlmProvider("ollama")}
-            className={`p-3 rounded-lg border-2 text-left transition-colors ${
+            className={`p-3 rounded-lg border text-left transition-colors ${
               isOllama
-                ? "border-emerald-500 bg-emerald-50"
-                : "border-steel-200 hover:border-steel-300"
+                ? "border-emerald-500 bg-emerald-500/10"
+                : "border-border bg-surface-2 hover:border-emerald-500/60"
             }`}
           >
-            <p className="text-sm font-semibold text-navy-800">Ollama (Local)</p>
-            <p className="text-[10px] text-steel-500 mt-0.5">Fully local — no data leaves machine</p>
-            <p className="text-[10px] text-emerald-600 mt-0.5">✓ Maximum data privacy</p>
+            <p className="text-sm font-semibold text-fg">Ollama (Local)</p>
+            <p className="text-[10px] text-muted mt-0.5">Fully local — no data leaves machine</p>
+            <p className="text-[10px] text-emerald-500 mt-0.5">Maximum data privacy</p>
           </button>
         </div>
       </div>
 
       {/* PAT — only shown for GitHub provider */}
       {!isOllama && (
-        <div className="card p-5">
+        <div className="card panel-pad">
           <div className="flex items-center gap-2 mb-4">
-            <Key size={16} className="text-navy-700" />
-            <h2 className="text-sm font-semibold text-navy-800">GitHub Personal Access Token</h2>
+            <Key size={16} className="text-accent" />
+            <h2 className="section-title text-base">GitHub Personal Access Token</h2>
           </div>
-          <p className="text-xs text-steel-500 mb-3">
+          <p className="text-xs text-muted mb-3">
             Create a fine-grained PAT at{" "}
             <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noreferrer"
-               className="text-navy-700 underline">
+               className="text-accent underline">
               github.com/settings/tokens
             </a>{" "}
-            with <code className="text-[10px] bg-steel-50 px-1 py-0.5 rounded">models:read</code> permission.
+            with <code className="text-[10px] bg-bg-deep text-accent px-1 py-0.5 rounded">models:read</code> permission.
             The token is stored in the local SQLite database and only transmitted to GitHub's API over HTTPS.
           </p>
           <div className="flex gap-2">
@@ -130,12 +133,12 @@ export default function SettingsPanel() {
             />
           </div>
           {config.github_pat_masked && (
-            <p className="text-[10px] text-emerald-600 mt-1.5 flex items-center gap-1">
+            <p className="text-[10px] text-emerald-500 mt-1.5 flex items-center gap-1">
               <CheckCircle size={10} /> PAT configured ({config.github_pat_masked})
             </p>
           )}
           {!config.github_pat_masked && !pat && (
-            <p className="text-[10px] text-amber-600 mt-1.5">
+            <p className="text-[10px] text-amber-500 mt-1.5">
               No PAT configured. Also checks GITHUB_TOKEN environment variable.
             </p>
           )}
@@ -143,18 +146,21 @@ export default function SettingsPanel() {
       )}
 
       {/* Model config */}
-      <div className="card p-5">
+      <div className="card panel-pad">
         <div className="flex items-center gap-2 mb-4">
-          <Cpu size={16} className="text-navy-700" />
-          <h2 className="text-sm font-semibold text-navy-800">
-            {isOllama ? "Ollama Configuration" : "GitHub Models Configuration"}
-          </h2>
+          <Cpu size={16} className="text-accent" />
+          <div>
+            <p className="section-kicker">Model Control</p>
+            <h2 className="section-title text-base">
+              {isOllama ? "Ollama Configuration" : "GitHub Models Configuration"}
+            </h2>
+          </div>
         </div>
         <div className="space-y-3">
           {isOllama ? (
             <>
               <div>
-                <label className="text-xs font-medium text-steel-500 block mb-1">Ollama Model</label>
+                <label className="stat-label block mb-1">Ollama Model</label>
                 <select className="input-field" value={ollamaModel} onChange={(e) => setOllamaModel(e.target.value)}>
                   <option value="llama3.2">llama3.2 (recommended, 3B)</option>
                   <option value="llama3.1">llama3.1 (8B)</option>
@@ -164,26 +170,26 @@ export default function SettingsPanel() {
                   <option value="qwen2.5-coder">qwen2.5-coder (7B, code-focused)</option>
                   <option value="deepseek-r1">deepseek-r1 (if available)</option>
                 </select>
-                <p className="text-[10px] text-steel-500 mt-1">
-                  Install models with: <code className="bg-steel-50 px-1 rounded">ollama pull {ollamaModel}</code>
+                <p className="text-[10px] text-muted mt-1">
+                  Install models with: <code className="bg-bg-deep text-accent px-1 rounded">ollama pull {ollamaModel}</code>
                 </p>
               </div>
               <div>
-                <label className="text-xs font-medium text-steel-500 block mb-1">Ollama Endpoint</label>
+                <label className="stat-label block mb-1">Ollama Endpoint</label>
                 <input
                   className="input-field font-mono text-xs"
                   value={ollamaEndpoint}
                   onChange={(e) => setOllamaEndpoint(e.target.value)}
                 />
-                <p className="text-[10px] text-steel-500 mt-1">
-                  Start Ollama with: <code className="bg-steel-50 px-1 rounded">ollama serve</code>
+                <p className="text-[10px] text-muted mt-1">
+                  Start Ollama with: <code className="bg-bg-deep text-accent px-1 rounded">ollama serve</code>
                 </p>
               </div>
             </>
           ) : (
             <>
               <div>
-                <label className="text-xs font-medium text-steel-500 block mb-1">Model</label>
+                <label className="stat-label block mb-1">Model</label>
                 <select className="input-field" value={model} onChange={(e) => setModel(e.target.value)}>
                   <option value="openai/gpt-4.1">openai/gpt-4.1 (recommended)</option>
                   <option value="openai/gpt-4o">openai/gpt-4o</option>
@@ -193,7 +199,7 @@ export default function SettingsPanel() {
                 </select>
               </div>
               <div>
-                <label className="text-xs font-medium text-steel-500 block mb-1">Endpoint</label>
+                <label className="stat-label block mb-1">Endpoint</label>
                 <input
                   className="input-field font-mono text-xs"
                   value={endpoint}
@@ -204,7 +210,7 @@ export default function SettingsPanel() {
           )}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-medium text-steel-500 block mb-1">
+              <label className="stat-label block mb-1">
                 Temperature ({temperature})
               </label>
               <input
@@ -214,10 +220,10 @@ export default function SettingsPanel() {
                 onChange={(e) => setTemperature(e.target.value)}
                 className="w-full"
               />
-              <p className="text-[10px] text-steel-500">Lower = more precise financial calculations</p>
+              <p className="text-[10px] text-muted">Lower = more precise financial calculations</p>
             </div>
             <div>
-              <label className="text-xs font-medium text-steel-500 block mb-1">Max Tokens</label>
+              <label className="stat-label block mb-1">Max Tokens</label>
               <input
                 type="number"
                 className="input-field"
@@ -240,36 +246,36 @@ export default function SettingsPanel() {
           {testing ? "Testing..." : "Test Connection"}
         </button>
         {saved && (
-          <span className="text-xs text-emerald-600 flex items-center gap-1">
+          <span className="text-xs text-emerald-500 flex items-center gap-1">
             <CheckCircle size={14} /> Saved
           </span>
         )}
       </div>
 
       {testResult && (
-        <div className={`card p-4 flex items-start gap-3 ${testResult.ok ? "border-emerald-200 bg-emerald-50" : "border-red-200 bg-red-50"}`}>
+        <div className={`card p-4 flex items-start gap-3 ${testResult.ok ? "border-emerald-500/40 bg-emerald-500/10" : "border-red-500/40 bg-red-500/10"}`}>
           {testResult.ok
-            ? <CheckCircle size={18} className="text-emerald-600 mt-0.5 flex-shrink-0" />
-            : <XCircle size={18} className="text-red-600 mt-0.5 flex-shrink-0" />}
+            ? <CheckCircle size={18} className="text-emerald-500 mt-0.5 flex-shrink-0" />
+            : <XCircle size={18} className="text-red-500 mt-0.5 flex-shrink-0" />}
           <div>
-            <p className={`text-sm font-medium ${testResult.ok ? "text-emerald-800" : "text-red-800"}`}>
+            <p className={`text-sm font-medium ${testResult.ok ? "text-emerald-300" : "text-red-300"}`}>
               {testResult.ok ? "Connection Successful" : "Connection Failed"}
             </p>
-            <p className="text-xs mt-0.5 text-steel-500 break-all">{testResult.message}</p>
+            <p className="text-xs mt-0.5 text-muted break-all">{testResult.message}</p>
           </div>
         </div>
       )}
 
       {/* Security info */}
-      <div className="card p-5">
+      <div className="card panel-pad">
         <div className="flex items-center gap-2 mb-3">
-          <Shield size={16} className="text-navy-700" />
-          <h2 className="text-sm font-semibold text-navy-800">Security & Privacy</h2>
+          <Shield size={16} className="text-accent" />
+          <h2 className="section-title text-base">Security & Privacy</h2>
         </div>
-        <ul className="space-y-2 text-xs text-steel-500">
+        <ul className="space-y-2 text-xs text-muted">
           <li className="flex items-start gap-2">
             <span className="text-emerald-500 mt-0.5">●</span>
-            All data stored locally in <code className="bg-steel-50 px-1 rounded">data/finimpact.db</code> (SQLite)
+            All data stored locally in <code className="bg-bg-deep text-accent px-1 rounded">data/finimpact.db</code> (SQLite)
           </li>
           {isOllama ? (
             <>
@@ -286,7 +292,7 @@ export default function SettingsPanel() {
             <>
               <li className="flex items-start gap-2">
                 <span className="text-emerald-500 mt-0.5">●</span>
-                PAT is only transmitted to <code className="bg-steel-50 px-1 rounded">models.github.ai</code> via HTTPS
+                PAT is only transmitted to <code className="bg-bg-deep text-accent px-1 rounded">models.github.ai</code> via HTTPS
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-emerald-500 mt-0.5">●</span>
