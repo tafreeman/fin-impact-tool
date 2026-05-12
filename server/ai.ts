@@ -196,7 +196,8 @@ export async function parseIntent(
     const content = data.choices?.[0]?.message?.content ?? "";
 
     // Strip markdown fences if the model wraps its response
-    const cleaned = content.replace(/```(?:json)?\s*/g, "").replace(/```\s*/g, "").trim();
+    const match = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+    const cleaned = match ? match[1].trim() : content.trim();
     const parsed = JSON.parse(cleaned);
 
     // Validate against schema — catches malformed LLM output at the boundary
