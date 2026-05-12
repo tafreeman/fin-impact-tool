@@ -549,7 +549,7 @@ async function requestFinalSummary(
 ): Promise<AgenticResponse> {
   messages.push({ role: "user", content: "Please provide your final analysis based on the scenarios you've explored so far." });
   try {
-    const data = await chatRequest(endpoint, pat, { model, max_tokens: 2000, temperature: 0.2, messages: messages as unknown as Record<string, unknown>[] });
+    const data = await chatRequest(endpoint, pat, { model, max_tokens: 2000, temperature: 0.2, messages });
     totalTokens += data.usage?.total_tokens ?? 0;
     return {
       content: data.choices?.[0]?.message?.content ?? "(no final response)",
