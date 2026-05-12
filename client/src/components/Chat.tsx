@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Send, Loader2, Sparkles, Clock, Zap } from "lucide-react";
+import { Send, Loader2, Sparkles, Clock, Zap, ChevronDown, ChevronRight } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { api, type AgenticResponse, type ScenarioResult } from "../api";
 import ScenarioCards from "./ScenarioCards";
@@ -78,12 +78,17 @@ export default function Chat() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      {/* Main chat area */}
-      <div className="lg:col-span-2 space-y-4">
-        {/* Input */}
-        <div className="card p-4">
-          <label className="text-xs font-semibold text-navy-800 uppercase tracking-wider mb-2 block">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="space-y-4">
+        <div className="card panel-pad">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <div>
+              <p className="section-kicker">AI Analyst</p>
+              <h2 className="section-title mt-1">Ask a scenario question</h2>
+            </div>
+            <span className="signal-chip">engine-backed</span>
+          </div>
+          <label className="mb-2 block font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted">
             Scenario Question
           </label>
           <div className="relative">
@@ -100,25 +105,24 @@ export default function Chat() {
             <button
               onClick={() => runQuery()}
               disabled={loading || !query.trim()}
-              className="absolute right-2 bottom-2 p-2 rounded-lg bg-navy-700 text-white
-                         hover:bg-navy-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="absolute bottom-2 right-2 rounded-md bg-accent p-2 text-white
+                         transition-colors hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-30"
             >
               {loading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
             </button>
           </div>
-          <p className="text-[10px] text-steel-500 mt-1">Ctrl+Enter to send</p>
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.16em] text-dim">Ctrl+Enter to send</p>
         </div>
 
-        {/* Quick queries */}
         <div className="flex flex-wrap gap-2">
           {QUICK_QUERIES.map((q, i) => (
             <button
               key={i}
               onClick={() => { setQuery(q.query); runQuery(q.query); }}
               disabled={loading}
-              className="px-3 py-1.5 text-xs font-medium bg-white border border-steel-200
-                         rounded-full hover:border-navy-700 hover:text-navy-700 transition-colors
-                         disabled:opacity-50 flex items-center gap-1.5"
+              className="flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5
+                         text-xs font-medium text-muted transition-colors hover:border-accent hover:text-accent-hover
+                         disabled:opacity-50"
             >
               <Sparkles size={12} />
               {q.label}
@@ -129,14 +133,14 @@ export default function Chat() {
         {/* Response */}
         {loading && (
           <div className="card p-8 text-center">
-            <Loader2 size={24} className="animate-spin mx-auto text-navy-700 mb-2" />
-            <p className="text-sm text-steel-500">Analyzing scenarios...</p>
-            <p className="text-[10px] text-steel-500 mt-1">The AI is exploring options using the calculation engine</p>
+            <Loader2 size={24} className="mx-auto mb-2 animate-spin text-accent" />
+            <p className="text-sm text-muted">Analyzing scenarios...</p>
+            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-dim">The AI is exploring options using the calculation engine</p>
           </div>
         )}
 
         {error && (
-          <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-300">
             {error}
           </div>
         )}
@@ -146,11 +150,11 @@ export default function Chat() {
             {/* Scenarios explored badge */}
             {agenticResponse.scenarios_explored.length > 0 && (
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-navy-700 text-white text-[10px] font-semibold uppercase tracking-wider rounded-full">
+                <span className="signal-chip">
                   <Zap size={10} />
                   {agenticResponse.scenarios_explored.length} scenario{agenticResponse.scenarios_explored.length !== 1 ? "s" : ""} computed
                 </span>
-                <span className="text-[10px] text-steel-500 font-mono">
+                <span className="font-mono text-[10px] text-dim">
                   {agenticResponse.tokensUsed?.toLocaleString()} tokens · {agenticResponse.model}
                 </span>
               </div>
@@ -174,11 +178,11 @@ export default function Chat() {
             {/* AI narrative */}
             {agenticResponse.content && (
               <div className="card">
-                <div className="px-5 py-3 border-b border-steel-100 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-navy-800 uppercase tracking-wider">
+                <div className="flex items-center justify-between border-b border-border px-5 py-4 pt-5">
+                  <span className="section-kicker">
                     AI Analysis
                   </span>
-                  <span className="text-[10px] text-steel-500 font-mono">
+                  <span className="font-mono text-[10px] text-dim">
                     {agenticResponse.model}
                   </span>
                 </div>
@@ -193,36 +197,35 @@ export default function Chat() {
         )}
       </div>
 
-      {/* Sidebar: history */}
       <div className="space-y-4">
         <div className="card">
-          <div className="px-4 py-3 border-b border-steel-100 flex items-center justify-between">
-            <span className="text-xs font-semibold text-navy-800 uppercase tracking-wider flex items-center gap-1.5">
+          <div className="flex items-center justify-between border-b border-border px-4 py-4 pt-5">
+            <span className="section-kicker flex items-center gap-1.5">
               <Clock size={12} /> History
             </span>
             <button
               onClick={() => setShowHistory(!showHistory)}
-              className="text-[10px] text-navy-700 hover:underline"
+              className="font-mono text-[10px] uppercase tracking-[0.16em] text-accent hover:text-accent-hover"
             >
               {showHistory ? "Collapse" : "Expand"}
             </button>
           </div>
-          <div className="divide-y divide-steel-100 max-h-[600px] overflow-y-auto">
+          <div className="max-h-[600px] divide-y divide-border-soft overflow-y-auto">
             {history.length === 0 ? (
-              <div className="p-4 text-sm text-steel-500 text-center">No queries yet</div>
+              <div className="p-4 text-center text-sm text-muted">No queries yet</div>
             ) : (
               history.map((h: any) => (
                 <button
                   key={h.id}
                   onClick={() => setQuery(h.query)}
-                  className="w-full text-left px-4 py-2.5 hover:bg-steel-50 transition-colors"
+                  className="w-full px-4 py-3 text-left transition-colors hover:bg-surface-2"
                 >
-                  <p className="text-xs font-medium text-navy-800 line-clamp-2">{h.query}</p>
-                  <p className="text-[10px] text-steel-500 mt-0.5">
+                  <p className="line-clamp-2 text-xs font-medium text-fg">{h.query}</p>
+                  <p className="mt-1 font-mono text-[10px] text-dim">
                     {new Date(h.created_at).toLocaleString()}
                   </p>
                   {showHistory && (
-                    <p className="text-[11px] text-steel-500 mt-1 line-clamp-3">{h.response?.slice(0, 200)}</p>
+                    <p className="mt-2 line-clamp-3 text-[11px] text-muted">{h.response?.slice(0, 200)}</p>
                   )}
                 </button>
               ))
@@ -250,31 +253,31 @@ function ScenarioAccordion({ index, scenario, isExpanded, onToggle }: {
     <div className="card overflow-hidden">
       <button
         onClick={onToggle}
-        className="w-full px-4 py-2.5 flex items-center justify-between hover:bg-steel-50/50 transition-colors"
+        className="flex w-full items-center justify-between px-4 py-3 transition-colors hover:bg-surface-2/70"
       >
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center justify-center w-5 h-5 bg-navy-700 text-white text-[10px] font-bold rounded-full">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white">
             {index + 1}
           </span>
-          <span className="text-xs font-semibold text-navy-800 uppercase tracking-wider">
+          <span className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-fg">
             {action.replace(/_/g, " ")}
           </span>
-          <span className="text-xs text-steel-500">— {project}</span>
+          <span className="truncate text-xs text-muted">— {project}</span>
         </div>
         <div className="flex items-center gap-3">
           {hasImpact && (
             <span className={`text-xs font-mono font-semibold ${
-              scenario.impact!.cost_delta_monthly <= 0 ? "text-emerald-600" : "text-red-600"
+              scenario.impact!.cost_delta_monthly <= 0 ? "text-emerald-500" : "text-red-500"
             }`}>
               {scenario.impact!.cost_delta_monthly >= 0 ? "+" : ""}
               ${Math.round(scenario.impact!.cost_delta_monthly).toLocaleString()}/mo
             </span>
           )}
-          <span className="text-[10px] text-steel-500">{isExpanded ? "▲" : "▼"}</span>
+          {isExpanded ? <ChevronDown size={14} className="text-muted" /> : <ChevronRight size={14} className="text-muted" />}
         </div>
       </button>
       {isExpanded && (
-        <div className="border-t border-steel-100 p-4">
+        <div className="border-t border-border p-4">
           <ScenarioCards result={scenario} />
         </div>
       )}

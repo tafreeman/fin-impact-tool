@@ -25,7 +25,9 @@ jobs:
           node-version: "20"
           cache: npm
       - run: npm ci
+      - run: cd client && npm ci
       - run: npx tsc --noEmit
+      - run: npm test
       - run: npm run build
 
   build:
